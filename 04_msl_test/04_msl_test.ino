@@ -115,10 +115,10 @@ void setup() {
   pinMode(LED_INDICATOR, OUTPUT);
   pinMode(OUT0, OUTPUT);
   pinMode(OUT1, OUTPUT);
-
+  
   tft.init(SCREEN_HEIHGT, SCREEN_WIDTH); // Swapped as we're rotating the screen 90 degrees.
   tft.setRotation(3);
-
+  
   tft.fillScreen(ST77XX_WHITE);
   tft.setTextColor(ST77XX_BLACK);
   tft.setTextWrap(true);
@@ -245,9 +245,8 @@ void loop() {
       digitalWrite(LED_INDICATOR, HIGH);
 
       tft.fillScreen(ST77XX_WHITE);
-      tft.fillCircle(SCREEN_WIDTH / 2, SCREEN_HEIHGT / 2, (SCREEN_HEIHGT / 2) * 0.8, ST77XX_DARKGREEN);
+      tft.fillCircle(tft.width() / 2, tft.height() / 2, (tft.height() / 2) * 0.8, ST77XX_DARKGREEN);
       tft.setTextColor(ST77XX_WHITE);
-      tft.setFont(&FreeSansBold18pt7b);
       printCentered("OK");
 
       setState(SCANNED);
@@ -259,14 +258,16 @@ void loop() {
         strncat(buff, app, sizeof(buff) - 1);
       }
 
-      Serial.print("Good scan: ");
+      Serial.print("\nGood scan: ");
       Serial.println(buff);
 
-      clearInt(mfrc522);
-      mfrc522.PICC_HaltA();
     } else {
-      Serial.println("Bad read (was card removed too quickly?)");
+      tft.fillCircle(tft.width() - 4, tft.height() - 4, 2, ST77XX_RED);
+      delay(100);
+      tft.fillCircle(tft.width() - 4, tft.height() - 4, 2, ST77XX_WHITE);
     };
+    clearInt(mfrc522);
+    mfrc522.PICC_HaltA();
     cardSeen = false;
   }
 
@@ -290,9 +291,8 @@ void loop() {
     static unsigned long int lst = millis();
     if (millis() - lst > 250) {
       tft.fillScreen(ST77XX_WHITE);
-      tft.fillCircle(SCREEN_WIDTH / 2, SCREEN_HEIHGT / 2, (SCREEN_HEIHGT / 2) * 0.8, ST77XX_RED);
+      tft.fillCircle(tft.width() / 2, tft.height() / 2, (tft.height() / 2) * 0.8, ST77XX_RED);
       tft.setTextColor(ST77XX_BLACK);
-      tft.setFont(&FreeSansBold18pt7b);
       printCentered("No");
       setState(SCANNED);
     };
@@ -304,9 +304,8 @@ void loop() {
     static unsigned long int lst = millis();
     if (millis() - lst > 250) {
       tft.fillScreen(ST77XX_WHITE);
-      tft.fillCircle(SCREEN_WIDTH / 2, SCREEN_HEIHGT / 2, (SCREEN_HEIHGT / 2) * 0.8, ST77XX_BLUE);
+      tft.fillCircle(tft.width() / 2, tft.height() / 2, (tft.height() / 2) * 0.8, ST77XX_BLUE);
       tft.setTextColor(ST77XX_WHITE);
-      tft.setFont(&FreeSansBold18pt7b);
       printCentered("Yes");
       setState(SCANNED);
     };
